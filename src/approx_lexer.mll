@@ -479,6 +479,10 @@ rule token = parse
   | "]"  { RBRACKET }
   | "{"  { LBRACE }
   | "{<" { LBRACELESS }
+  | "{{"
+  | "{" lowercase identchar * "{"
+  | "{" lowercase identchar * ':' lowercase identchar * "{"
+  | "{" lowercase identchar * ':' lowercase identchar * "(" lowercase identchar * ("," lowercase identchar *) * ")" { START_LOCATION }
   | "|"  { BAR }
   | "||" { BARBAR }
   | "|]" { BARRBRACKET }
@@ -486,6 +490,7 @@ rule token = parse
   | ">]" { GREATERRBRACKET }
   | "}"  { RBRACE }
   | ">}" { GREATERRBRACE }
+  | "}}" { STOP_LOCATION }
   | "!"  { BANG }
 
   | "!=" { INFIXOP0 "!=" }

@@ -69,6 +69,8 @@ module Node = struct
     | KExternal
     | KCodeInComment
 
+    | KLocation
+
   (* Priority of open expression constructs (see below for operators) *)
   let prio = function
     | KIn | KArrow _ -> 0
@@ -131,6 +133,7 @@ module Node = struct
     | KWhen -> "KWhen"
     | KExternal -> "KExternal"
     | KCodeInComment -> "KCodeInComment"
+    | KLocation -> "KLocation"
 
   and aux str k =
     Printf.sprintf "%s(%s)" str (string_of_kind k)
@@ -288,7 +291,7 @@ let unwind_while f path =
 
 (* Unwind the struct/sig top *)
 let unwind_top =
-  unwind (function KStruct|KSig|KParen|KBegin|KObject -> true
+  unwind (function KStruct|KSig|KParen|KBegin|KObject|KLocation -> true
                  | _ -> false)
 
 (* Get the parent node *)
@@ -1349,6 +1352,9 @@ let rec update_path config block stream tok =
 
   | LINE_DIRECTIVE ->
       append KUnknown (A 0) ~pad:0 block.path
+
+  | START_LOCATION -> append KLocation L (unwind_top block.path)
+  | STOP_LOCATION -> close ((=) KLocation) block.path
 
 let update config block stream tok =
   let path = update_path config block stream tok in

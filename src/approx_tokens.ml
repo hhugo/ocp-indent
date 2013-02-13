@@ -130,6 +130,8 @@ type token =
   | SHARP
   | SIG
   | STAR
+  | START_LOCATION
+  | STOP_LOCATION
   | STRING of (string)
   | STRUCT
   | THEN
